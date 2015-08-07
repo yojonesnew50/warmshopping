@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load filename %}
+{% load staticfiles %}
+{% block scripts %}
+ <!--Master Slider Styles-->
+    <link href="{% static 'masterslider/style/masterslider.css' %}" rel="stylesheet" media="screen">
+    <!--Styles-->
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet" media="screen">
+    
+    
+    
+    <!--Modernizr-->
+		<script src="{% static 'js/libs/modernizr.custom.js' %}"></script>
+    <!--Adding Media Queries Support for IE8-->
+    <!--[if lt IE 9]>
+      <script src="js/plugins/respond.js"></script>
+    <![endif]-->
+{% endblock %}
+
+{% block content %}
+
+
+<table>
+    
+    <thead><th>Title</th><th>Description</th><th>Download</th></thead>
+    
+    {% for product in products %}
+    <tr>
+        <td>
+            {{ product }}
+        </td>
+        <td>
+            {{ product.description }}
+        </td>
+        <td>
+            <a href='{% url 'download_product' product.slug product.pk product.download|filename %}'>Download {{ product.download|filename }}</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+
+
+{% endblock %}

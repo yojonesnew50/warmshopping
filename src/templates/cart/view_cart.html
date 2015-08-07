@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+ {% block scripts %}
+      <!--Master Slider Styles-->
+    <link href="{% static 'masterslider/style/masterslider.css' %}" rel="stylesheet" media="screen">
+    <!--Styles-->
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet" media="screen">
+    
+    <!--Modernizr-->
+		<script src="{% static 'js/libs/modernizr.custom.js' %}"></script>
+    <!--Adding Media Queries Support for IE8-->
+    <!--[if lt IE 9]>
+      <script src="js/plugins/respond.js"></script>
+    <![endif]-->
+{% endblock %}
+
+{% block content %}
+
+ <!--Breadcrumbs-->
+      <ol class="breadcrumb">
+        <li><a href="{% url "home" %}">Home</a></li>
+        <li>Shopping cart</li>
+      </ol><!--Breadcrumbs Close-->
+
+  <!--Shopping Cart-->
+      <section class="shopping-cart">
+      	<div class="container">
+        	<div class="row" style="min-height:400px">
+          
+          	<!--Items List-->
+          	<div class="col-lg-9 col-md-9">
+            	<h2 class="title">Shopping cart</h2>
+            	<table class="items-list">
+              {% if exists %}
+                    	<tr>
+                	<th></th>
+                  <th>Item</th>
+                  <th>price</th>
+                </tr>
+              {% endif %}
+                {% for item in cart.cartitem_set.all %}
+                     <!--Item-->
+                    <tr class="item first">
+                        <td class="thumb"><a href="{% url 'single_product' item.product.slug item.product.pk %}">
+                            {% if product.get_featured_image  %}
+                                <img src="{{ product.get_featured_image.url }}" style='height:119px;width:152px;' alt="1">
+                            {% else %}
+                                <img src="{% static 'img/catalog/shopping-cart-thumb.jpg' %}" style='height:119px;width:152px;' alt="1">
+                            {% endif %}
+                        </a></td>
+                        <td class="name"><a href="{% url 'single_product' item.product.slug item.product.pk %}">{{ item.product }}</a></td>
+                            {% if item.product.sale_price %}
+                                <td class="price">{{ item.product.sale_price }} $</td>
+                            {% else %}
+                                <td class="price">{{ item.product.price }} $</td>
+                            {% endif %}                 
+                        <td class="delete"><a href="{% url "update_cart" item.product.id %}"><i class="icon-delete"></i></a></td>
+                    </tr>
+                     {% empty %}
+    <h4 style="padding-left:5em">Your Cart is Empty!</h4>     
+                {% endfor %}
+              </table>
+            </div>
+            
+            <!--Sidebar-->
+            <div class="col-lg-3 col-md-3">
+            	<h3>Cart totals</h3>
+              <form class="cart-sidebar" method="post">
+              	<div class="cart-totals">
+                	<table>
+                  	<tr>
+                    	<td>Cart subtotal</td>
+                      <td class="total align-r">{{ cart.total }} $</td>
+                    </tr>
+                  	<tr class="devider">
+                    	<td>Shipping</td>
+                      <td class="align-r">Free shipping</td>
+                    </tr>
+                  	<tr>
+                    	<td>Order total</td>
+                      <td class="total align-r">{{ cart.total }} $</td>
+                    </tr>
+                  </table>
+                 <input type="submit" class="btn btn-black btn-block" name="to-checkout" value="Proceed to checkout">
+                </div>
+                </form>
+            </div>
+          </div>
+        </div>
+      </section><!--Shopping Cart Close-->
+
+{% endblock %}
+
+     <script src="{% static 'js/libs/jquery-1.11.1.min.js' %}"></script>
+        <script src="{% static 'js/libs/jquery-ui-1.10.4.custom.min.js' %}"></script>
+        <script src="{% static 'js/libs/jquery.easing.min.js' %}"></script>
+        <script src="{% static 'js/plugins/bootstrap.min.js' %}"></script>
+        <script src="{% static 'js/plugins/smoothscroll.js' %}"></script>
+        <script src="{% static 'js/plugins/jquery.validate.min.js' %}"></script>
+        <script src="{% static 'js/plugins/icheck.min.js' %}"></script>
+        <script src="{% static 'js/plugins/jquery.placeholder.js' %}"></script>
+        <script src="{% static 'js/plugins/jquery.stellar.min.js' %}"></script>
+        <script src="{% static 'js/plugins/jquery.touchSwipe.min.js' %}"></script>
+        <script src="{% static 'js/plugins/jquery.shuffle.min.js' %}"></script>
+        <script src="{% static 'js/plugins/lightGallery.min.js' %}"></script>
+        <script src="{% static 'js/plugins/owl.carousel.min.js' %}"></script>
+        <script src="{% static 'js/plugins/masterslider.min.js' %}"></script>
+    <script src="{% static 'js/plugins/jquery.nouislider.min.js' %}"></script>
+        <script src="{% static 'mailer/mailer.js' %}"></script>
+        <script src="{% static 'js/scripts.js' %}"></script>

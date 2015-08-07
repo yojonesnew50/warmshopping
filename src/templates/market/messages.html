@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+ {% block scripts %}
+      <!--Master Slider Styles-->
+    <link href="{% static 'masterslider/style/masterslider.css' %}" rel="stylesheet" media="screen">
+
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+    <!--Modernizr-->
+    <script src="{% static 'js/libs/modernizr.custom.js' %}"></script>
+{% endblock %}
+	{% block content %}	
+	
+<div class="wrapper row3">
+  <div id="container">
+    <!-- ################################################################################################ -->
+    <section class="clear">
+    	<div>&nbsp;</div>	<div>&nbsp;</div>	<div>&nbsp;</div>	<div>&nbsp;</div>
+	<h5 class="alert-msg rnd8 warning" align="center">{{ message }} </h5>
+	<div>&nbsp;</div>	<div>&nbsp;</div>
+</section>
+</div></div>
+ <div class="clear"></div>
+{% endblock %}

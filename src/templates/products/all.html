@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load bootstrap_themes %}
+ {% block scripts %}
+      <!--Master Slider Styles-->
+    <link href="{% static 'masterslider/style/masterslider.css' %}" rel="stylesheet" media="screen">
+
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+    <!--Modernizr-->
+    <script src="{% static 'js/libs/modernizr.custom.js' %}"></script>
+{% endblock %}
+{% block content %}
+    <!--Filters Modal-->
+    <div class="modal fade" id="filterModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+        	<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button></div>
+          <div class="modal-body">
+            <!--Here goes filters dynamically pasted by jQuery-->
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+ <!--Breadcrumbs-->
+      <ol class="breadcrumb">
+        <li><a href="{% url "home" %}">Home</a></li>
+        <li>Products</li>
+      </ol><!--Breadcrumbs Close-->
+      
+      <!--Catalog Grid-->
+      <section class="catalog-grid">
+      	<div class="container">
+          <h2 class="with-sorting">Products</h2>
+          <div class="sorting">
+            <a class="{{ namesort }}" href="javascript:void(0)" 
+                           onclick="var url = window.location.href; if (url.indexOf('?') != -1) window.location += '&namesort={{ namesort }}'; else window.location += '?namesort={{ namesort }}';">Sort by name</a>
+            <a class="{{ pricesort }}" href="javascript:void(0)" 
+                           onclick="var url = window.location.href; if (url.indexOf('?') != -1) window.location += '&pricesort={{ pricesort }}'; else window.location += '?pricesort={{ pricesort }}';">Sort by price</a>
+          </div>
+          <div class="row">
+          
+            <!--Filters-->
+          	<div class="filters-mobile col-lg-3 col-md-3 col-sm-4">
+            	<div class="shop-filters">
+              	<a class="clear" style="cursor:pointer" href="?#">Clear filters</a>
+                <!--Price Section-->
+                <section class="filter-section">
+                	<h3>Filter by price</h3>
+                  <form method="get" name="price-filters">
+                    <div class="price-btns">
+                    <button class="btn btn-black btn-sm" name="price" value="below 50$" 
+                            onclick="$('#maxVal').val(50);"
+                            >below 50$</button><br/>
+                      <button class="btn btn-black btn-sm" name="price" value="50$-100$"
+                              onclick="$('#minVal').val(50); $('#maxVal').val(100);"
+                              >from 50$ to 100$</button><br/>
+                      <button class="btn btn-black btn-sm"name="price" value="100$-300$"
+                              onclick="$('#minVal').val(100); $('#maxVal').val(300);"
+                              >from 100$ to 300$</button><br/>
+                      <button class="btn btn-black btn-sm" name="price" value="300$-1000$"
+                              onclick="$('#minVal').val(300); $('#maxVal').val(1000);"
+                              >from 300$ to 1000$</button>
+                    </div>
+                    <div class="price-slider">
+                    	<div id="price-range"></div>
+                      <div class="values group">
+                      	<!--data-min-val represent minimal price and data-max-val maximum price respectively in pricing slider range; value="" - default values-->
+                      	<input class="form-control" name="pricemin" id="minVal" type="text" data-min-val="0" value="{{ pricemin }}">
+                        <span class="labels">$ - </span>
+                        <input class="form-control" name="pricemax" id="maxVal" type="text" data-max-val="2500" value="{{ pricemax }}">
+                        <span class="labels">$</span>
+                      </div>
+                      <input class="btn btn-primary btn-sm" type="submit" value="Filter">
+                    </div>
+                  </form>
+                </section>
+                
+                <!--Categories Section-->
+                <section class="filter-section">
+                	<h3>Categories</h3>
+                  <ul class="categories">
+                   {% for category in categories %}
+                    <li><a href="javascript:void(0)" 
+                           onclick="var url = window.location.href; if (url.indexOf('?') != -1) window.location += '&category={{ category.pk }}'; else window.location += '?category={{ category.pk }}';"
+                           >{{ category }} ({{ category.products_count }})</a></li>
+                   {% endfor %}
+                  </ul>
+                </section>
+              </div>
+            </div>
+            
+            <!--Tiles-->
+          	<div class="col-lg-9 col-md-9 col-sm-8">
+            	<div class="row">
+            {% for product in products %}    
+                <!--Tile-->
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="tile">
+                        {% comment %}
+                        <div class="badges">
+                            <span class="sale">Sale</span>
+                        </div>
+                        {% endcomment %}
+                        <div class="price-label">{{ product.get_price }} $</div>
+                        <a href="{% url 'single_product' product.slug product.pk %}">
+                            {% if product.get_featured_image  %}
+                                <img src="{{ product.get_featured_image.url }}" style='height:260px;width:285px;' alt="1">
+                            {% else %}
+                                <img src="{% static 'img/placeholder_image.png' %}" style='height:260px;width:285px;' alt="1">
+                            {% endif %}                      
+                            <span class="tile-overlay"></span>
+                        </a>
+                        <div class="footer">
+                            <a href="{% url 'single_product' product.slug product.pk %}">{{ product }}</a>
+                            <span>by {{ product.user }}</span>
+                            {% if product in cartitems %}
+                                    <button href="{% url 'cart' %}" class="btn btn-primary">View Cart</button>
+                            {% else %}
+                                <button href="{% url 'update_cart' product.id %}" class="btn btn-primary">Add to Cart</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+              
+              </div>
+              <!--Pagination-->
+              <ul class="pagination">
+                {% if products.has_previous %}
+                    <li class="prev-page"><a class="icon-arrow-left" href="?page={{ products.previous_page_number }}"></a></li>
+                {% endif %}
+                
+                {% for page in pages_range %}
+                    {% if page == products.number %} 
+                  <li class="active"><a href="#">{{ page }}</a></li>
+                  {% else %}
+                  <li><a href="?page={{ page }}">{{ page }}</a></li>
+                   {% endif %}
+                {% endfor %}
+   
+                
+                {% if products.has_next %}
+                    <li class="next-page"><a class="icon-arrow-right" href="?page={{ products.next_page_number }}"></a></li>
+                {% endif %}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section><!--Catalog Grid Close-->
+    
+{% endblock %}
+
+{% block buttomScripts %}
+      <!--Javascript (jQuery) Libraries and Plugins-->
+		<script src="{% static 'js/libs/jquery-1.11.1.min.js' %}"></script>
+        <script src="{% static 'js/libs/jquery-ui-1.10.4.custom.min.js' %}"></script>
+        <script src="{% static 'js/libs/jquery.easing.min.js' %}"></script>
+        <script src="{% static 'js/plugins/bootstrap.min.js' %}"></script>
+        <script src="{% static 'js/plugins/smoothscroll.js' %}"></script>
+        <script src="{% static 'js/plugins/jquery.validate.min.js' %}"></script>
+        <script src="{% static 'js/plugins/icheck.min.js' %}"></script>
+        <script src="{% static 'js/plugins/jquery.placeholder.js' %}"></script>
+        <script src="{% static 'js/plugins/jquery.stellar.min.js' %}"></script>
+        <script src="{% static 'js/plugins/jquery.touchSwipe.min.js' %}"></script>
+        <script src="{% static 'js/plugins/jquery.shuffle.min.js' %}"></script>
+        <script src="{% static 'js/plugins/lightGallery.min.js' %}"></script>
+        <script src="{% static 'js/plugins/owl.carousel.min.js' %}"></script>
+        <script src="{% static 'js/plugins/masterslider.min.js' %}"></script>
+        <script src="{% static 'js/plugins/jquery.nouislider.min.js' %}"></script>
+		<script src="{% static 'mailer/mailer.js' %}"></script>
+        <script src="{% static 'js/scripts.js' %}"></script>
+{% endblock %}

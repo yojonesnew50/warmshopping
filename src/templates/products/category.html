@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block scripts %}
+ <!--Master Slider Styles-->
+    <link href="{% static 'masterslider/style/masterslider.css' %}" rel="stylesheet" media="screen">
+    <!--Styles-->
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet" media="screen">
+    
+    
+    
+    <!--Modernizr-->
+		<script src="{% static 'js/libs/modernizr.custom.js' %}"></script>
+    <!--Adding Media Queries Support for IE8-->
+    <!--[if lt IE 9]>
+      <script src="js/plugins/respond.js"></script>
+    <![endif]-->
+{% endblock %}
+
+{% block content %}
+
+ <!--Breadcrumbs-->
+      <ol class="breadcrumb">
+        <li><a href="{% url "home" %}">Home</a></li>
+        <li>Category</li>
+      </ol><!--Breadcrumbs Close-->
+
+ <!--Catalog Grid-->
+      <section class="catalog-grid">
+      	<div class="container">
+          <h2 class="with-sorting">{{ category }}</h2>
+                    
+          <div class="row" style="min-height:75px;">
+          {% for product in products %}             
+                <!--Tile-->
+                	<div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="tile">
+                        {% comment %}
+                        <div class="badges">
+                            <span class="sale">Sale</span>
+                        </div>
+                        {% endcomment %}
+                        <div class="price-label">{{ product.get_price }} $</div>
+                        <a href="{% url 'single_product' product.slug product.pk %}">
+                            {% if product.get_featured_image  %}
+                                <img src="{{ product.get_featured_image.url }}" style='height:260px;width:285px;' alt="1">
+                            {% else %}
+                                <img src="{% static 'img/placeholder_image.png' %}" style='height:260px;width:285px;' alt="1">
+                            {% endif %}                      
+                            <span class="tile-overlay"></span>
+                        </a>
+                        <div class="footer">
+                            <a href="{% url 'single_product' product.slug product.pk %}">{{ product }}</a>
+                            <span>by {{ product.user }}</span>
+                            {% if product in cartitems %}
+                                    <button href="{% url 'cart' %}" class="btn btn-primary">View Cart</button>
+                            {% else %}
+                                <button href="{% url 'update_cart' product.id %}" class="btn btn-primary">Add to Cart</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+              {% empty %}
+    <h4 style="padding-left:5em">Sorry, no products found.</h4>              
+            {% endfor %}
+          </div>
+         <!--Pagination-->
+              <ul class="pagination">
+                {% if products.has_previous %}
+                    <li class="prev-page"><a class="icon-arrow-left" href="?page={{ products.previous_page_number }}&q={{ query }}"></a></li>
+                {% endif %}
+                
+                {% for page in pages_range %}
+                    {% if page == products.number %} 
+                  <li class="active"><a href="#">{{ page }}</a></li>
+                  {% else %}
+                  <li><a href="?page={{ page }}&q={{ query }}">{{ page }}</a></li>
+                   {% endif %}
+                {% endfor %}
+   
+                
+                {% if products.has_next %}
+                    <li class="next-page"><a class="icon-arrow-right" href="?page={{ products.next_page_number }}&q={{ query }}"></a></li>
+                {% endif %}
+              </ul>
+           {% if related %}
+                 <h3>Related Categories</h3>
+              <div class="row" style="min-height:75px;">
+               {% for category in related %}
+                	<!--Category-->
+          	<div class="category col-lg-2 col-md-2 col-sm-4 col-xs-6">
+            	<a href="{% url 'category' category.slug %}">
+                    {% if category.get_featured_image  %}
+<img src="{{ category.get_featured_image.url }}" style='height:189px;width:163px;'>
+{% else %}
+<img src="{% static 'img/placeholder_image.png' %}" style='height:260px;width:285px;' alt="...">
+{% endif %}
+                <p>{{ category }}</p>
+              </a>
+            </div>
+                {% empty %}
+    <h4 style="padding-left:5em">Sorry, no categories found.</h4>
+                   {% endfor %}
+          </div>
+           {% endif %}
+        </div>
+      </section><!--Catalog Grid Close-->
+
+
+{% endblock %}
+
+{% block buttomScripts %}
+        <!--Javascript (jQuery) Libraries and Plugins-->
+        <script src="{% static 'js/libs/jquery-1.11.1.min.js' %}"></script>
+        <script src="{% static 'js/libs/jquery-ui-1.10.4.custom.min.js' %}"></script>
+        <script src="{% static 'js/libs/jquery.easing.min.js' %}"></script>
+        <script src="{% static 'js/plugins/bootstrap.min.js' %}"></script>
+        <script src="{% static 'js/plugins/smoothscroll.js' %}"></script>
+        <script src="{% static 'js/plugins/jquery.validate.min.js' %}"></script>
+        <script src="{% static 'js/plugins/icheck.min.js' %}"></script>
+        <script src="{% static 'js/plugins/jquery.placeholder.js' %}"></script>
+        <script src="{% static 'js/plugins/jquery.stellar.min.js' %}"></script>
+        <script src="{% static 'js/plugins/jquery.touchSwipe.min.js' %}"></script>
+        <script src="{% static 'js/plugins/jquery.shuffle.min.js' %}"></script>
+        <script src="{% static 'js/plugins/lightGallery.min.js' %}"></script>
+        <script src="{% static 'js/plugins/owl.carousel.min.js' %}"></script>
+        <script src="{% static 'js/plugins/masterslider.min.js' %}"></script>
+        <script src="{% static 'mailer/mailer.js' %}"></script>
+        <script src="{% static 'js/scripts.js' %}"></script>
+{% endblock %}

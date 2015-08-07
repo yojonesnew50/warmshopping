@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load bootstrap_themes %}
+{% load filename %}
+   {% block scripts %}
+ <!--Master Slider Styles-->
+    <link href="{% static 'masterslider/style/masterslider.css' %}" rel="stylesheet" media="screen">
+    <!--Styles-->
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet" media="screen">
+    
+    <!--Modernizr-->
+    <script src="{% static 'js/libs/modernizr.custom.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+  <!--Breadcrumbs-->
+      <ol class="breadcrumb">
+        <li><a href="{% url "home" %}">Home</a></li>
+        <li><a href="{% url "all_products" %}">Products</a></li>
+        <li>{{ product }}</li>
+      </ol><!--Breadcrumbs Close-->
+
+  <!--Catalog Single Item-->
+      <section class="catalog-single">
+      	<div class="container">
+          <div class="row">
+            
+            <!--Product Description-->
+            <div class="col-lg-6 col-md-6">
+              <h1>{{ product }}</h1>
+              <div class="price">{{ product.get_price }} $</div>
+              <div class="buttons group">               
+                   {% if in_cart %}
+          <a class="btn btn-primary btn-sm" id="addItemToCart" href='{% url "cart" %}'><i class="icon-shopping-cart"></i>View Cart</a>
+        {% else %}
+   <a class="btn btn-primary btn-sm" id="addItemToCart" href="{% url "update_cart" product.id %}"><i class="icon-shopping-cart"></i>Add to cart</a>
+{% endif %}               
+              </div>
+              <p class="p-style2">{{ product.description }}</p>
+
+                  <div class='col-sm-12 pull-left '>
+  
+    {% if related %}
+    <h1>Related Product{% if related|length > 1 %}s{%endif%}</h1>
+    <ul>
+    
+    {% for item in related %}
+    
+    <li>
+        
+     <a href="{{ item.get_absolute_url }}">{{ item }}</a> 
+     </li>
+    
+    {% endfor %}
+    
+    </ul>
+    {% endif %}
+    
+    </div>
+    <!-- Starts right sidebar -->
+    <div class='col-sm-12 pull-left'>
+     
+            {% if categories %}
+                 <div class="panel panel-default">
+         <div class="panel-heading">
+            <h1 class="panel-title">Categor{% if categories|length == 1 %}y{%else%}ies{%endif%}</h1>
+    
+        </div>
+    <div class="panel-body">
+        <ul>        
+        {% for item in categories %}        
+        <li>            
+         <a href="{{ item.get_absolute_url }}">{{ item }}</a> 
+         </li>        
+        {% endfor %}        
+        </ul>
+         </div>
+                 </div>
+    {% endif %}
+
+    {% if downloadable or edit %}
+            <div class="panel panel-default">
+         <div class="panel-heading">
+           <h3 class="panel-title">My Actions</h3>
+         </div>
+         <div class="panel-body">            
+            <div class="btn-group-vertical">                    
+                 {% if product.download and downloadable %}
+        <a class='btn btn-default' href='download/{{ product.download|filename }}'>Download Product</a>
+        {% endif %}
+         {% if edit %}        
+        <a  class='btn btn-default' href='{% url "edit_product" product.slug product.pk %}'>Edit {{ product }}</a><br />
+        <a  class='btn btn-default' href='{% url "manage_product_image" product.slug product.pk %}'>Manage Images</a>
+    {% endif %}
+    
+            </div>
+            
+         </div>
+       </div>
+
+    {% endif %}
+    
+    </div>
+            </div>
+          
+          	<!--Product Gallery-->
+            <div class="col-lg-6 col-md-6">
+            	<div class="prod-gal master-slider" id="prod-gal">
+                     {% for abc in images %}
+                    <!--Slide1-->
+                <div class="ms-slide">
+                	<img src="{{ abc.image.url }}" data-src="{{ abc.image.url }}" alt="Lorem ipsum" style="width:130px;height:137px;"/>
+                  <img class="ms-thumb" src="{{ abc.image.url }}" alt="thumb"  style="width:130px;height:137px;"/>
+                </div>
+    {% endfor %}              	
+              </div>
+            </div>         
+</div>
+
+        </div>
+      </section><!--Catalog Single Item Close-->
+
+{% endblock %}
+
+{% block buttomScripts %}
+    <!--Javascript (jQuery) Libraries and Plugins-->
+		 <script src="{% static 'js/libs/jquery-1.11.1.min.js' %}"></script>
+        <script src="{% static 'js/libs/jquery-ui-1.10.4.custom.min.js' %}"></script>
+        <script src="{% static 'js/libs/jquery.easing.min.js' %}"></script>
+        <script src="{% static 'js/plugins/bootstrap.min.js' %}"></script>
+        <script src="{% static 'js/plugins/smoothscroll.js' %}"></script>
+        <script src="{% static 'js/plugins/jquery.validate.min.js' %}"></script>
+        <script src="{% static 'js/plugins/icheck.min.js' %}"></script>
+        <script src="{% static 'js/plugins/jquery.placeholder.js' %}"></script>
+        <script src="{% static 'js/plugins/jquery.stellar.min.js' %}"></script>
+        <script src="{% static 'js/plugins/jquery.touchSwipe.min.js' %}"></script>
+        <script src="{% static 'js/plugins/jquery.shuffle.min.js' %}"></script>
+        <script src="{% static 'js/plugins/lightGallery.min.js' %}"></script>
+        <script src="{% static 'js/plugins/owl.carousel.min.js' %}"></script>
+        <script src="{% static 'js/plugins/masterslider.min.js' %}"></script>
+    <script src="{% static 'js/plugins/jquery.nouislider.min.js' %}"></script>
+		<script src="{% static 'mailer/mailer.js' %}"></script>
+        <script src="{% static 'js/scripts.js' %}"></script>
+{% endblock %}
